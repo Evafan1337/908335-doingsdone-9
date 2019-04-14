@@ -1,5 +1,48 @@
 <?php
 $show_complete_tasks = rand(0, 1);
+$interface_list =[
+    "Входящие","Учеба","Работа","Домашние дела","Авто"
+];
+$count_interface_list=count($interface_list);
+$task_table =[
+    [
+        'task' => 'Собеседование в IT компании',
+        'date_of_doing' => '01.12.2018',
+        'category' => 'Работа',
+        'doing_progress' => False
+    ],
+    [
+        'task' => 'Выполнить тестовое задание',
+        'date_of_doing' => '25.12.2018',
+        'category' => 'Работа',
+        'doing_progress' => False
+    ],
+    [
+        'task' => 'Сделать задание первого раздела',
+        'date_of_doing' => '21.12.2018',
+        'category' => 'Учеба',
+        'doing_progress' => True
+    ],
+    [
+        'task' => 'Встреча с другом',
+        'date_of_doing' => '22.12.2018',
+        'category' => 'Входящие',
+        'doing_progress' => False
+    ],
+    [
+        'task' => 'Купить корм для кота',
+        'date_of_doing' => 'Нет',
+        'category' => 'Домашние дела',
+        'doing_progress' => False
+    ],
+    [
+        'task' => 'Заказать пиццу',
+        'date_of_doing' => 'Нет',
+        'category' => 'Домашние дела',
+        'doing_progress' => False
+    ],
+];
+$count_task_table = count($task_table);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -41,10 +84,18 @@ $show_complete_tasks = rand(0, 1);
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
+                        <?php
+                            $index=0;
+                            while($index<$count_interface_list):
+                        ?>
+
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#">Название проекта</a>
+                            <a class="main-navigation__list-item-link" href="#"><?=$interface_list[$index]; ?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
+                        <?php $index++; ?>
+                        <?php endwhile; ?>
+
                     </ul>
                 </nav>
 
@@ -76,20 +127,41 @@ $show_complete_tasks = rand(0, 1);
                 </div>
 
                 <table class="tasks">
-                    <tr class="tasks__item task">
+                    <?php
+                        $index = 0;
+                        while($index<$count_task_table):
+                            if(($task_table[$index]['doing_progress']) && ($show_complete_tasks)):
+                                echo '<tr class="tasks__item task task--completed">';
+                    ?>
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1">
-                                <span class="checkbox__text">Сделать главную страницу Дела в порядке</span>
+                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?=($task_table[$index]['doing_progress'])?' checked' : '' ?>>
+                                <span class="checkbox__text"><?=$task_table[$index]['task'] ?></span>
                             </label>
                         </td>
 
-                        <td class="task__file">
-                            <a class="download-link" href="#">Home.psd</a>
+                        <td class="task__date"><?=$task_table[$index]['date_of_doing'] ?></td>
+                        <td class="task__controls"></td>
+                        </tr>
+                    <?php
+                            elseif($task_table[$index]['doing_progress']!=True):
+                                echo '<tr class="tasks__item task">';
+                    ?>
+                            <td class="task__select">
+                            <label class="checkbox task__checkbox">
+                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?=($task_table[$index]['doing_progress'])?' checked' : '' ?>>
+                                <span class="checkbox__text"><?=$task_table[$index]['task'] ?></span>
+                            </label>
                         </td>
 
-                        <td class="task__date"></td>
-                    </tr>
+                        <td class="task__date"><?=$task_table[$index]['date_of_doing'] ?></td>
+                        <td class="task__controls"></td>
+                        </tr>
+                    <?php
+                        endif;
+                        $index++;
+                        endwhile;
+                    ?>
 
                     <?= ($show_complete_tasks ==1) ?
                         '<tr class="tasks__item task task--completed">
