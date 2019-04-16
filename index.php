@@ -1,48 +1,43 @@
 <?php
 $show_complete_tasks = rand(0, 1);
-$interface_list =[
-    "Входящие","Учеба","Работа","Домашние дела","Авто"
-];
-$count_interface_list=count($interface_list);
-$task_table =[
+$categories = ['incoming' => 'Входящие',
+                'study' => 'Учеба',
+                'job' => 'Работа',
+                'housework' => 'Домашние дела',
+                'car' => 'Авто',];
+$tasks = [
     [
         'task' => 'Собеседование в IT компании',
         'date_of_doing' => '01.12.2018',
-        'category' => 'Работа',
-        'doing_progress' => False
-    ],
-    [
+        'category' => $categories['job'],
+        'complete' => False
+    ],[
         'task' => 'Выполнить тестовое задание',
         'date_of_doing' => '25.12.2018',
-        'category' => 'Работа',
-        'doing_progress' => False
-    ],
-    [
+        'category' => $categories['job'],
+        'complete' => False
+    ],[
         'task' => 'Сделать задание первого раздела',
         'date_of_doing' => '21.12.2018',
-        'category' => 'Учеба',
-        'doing_progress' => True
-    ],
-    [
+        'category' => $categories['study'],
+        'complete' => True
+    ],[
         'task' => 'Встреча с другом',
         'date_of_doing' => '22.12.2018',
-        'category' => 'Входящие',
-        'doing_progress' => False
-    ],
-    [
+        'category' => $categories['incoming'],
+        'complete' => False
+    ],[
         'task' => 'Купить корм для кота',
-        'date_of_doing' => 'Нет',
-        'category' => 'Домашние дела',
-        'doing_progress' => False
-    ],
-    [
+        'date_of_doing' => null,
+        'category' => $categories['housework'],
+        'complete' => False
+    ],[
         'task' => 'Заказать пиццу',
-        'date_of_doing' => 'Нет',
-        'category' => 'Домашние дела',
-        'doing_progress' => False
+        'date_of_doing' => null,
+        'category' => $categories['housework'],
+        'complete' => False
     ],
 ];
-$count_task_table = count($task_table);
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -71,7 +66,6 @@ $count_task_table = count($task_table);
                 <div class="main-header__side-item user-menu">
                     <div class="user-menu__data">
                         <p>Константин</p>
-
                         <a href="#">Выйти</a>
                     </div>
                 </div>
@@ -84,18 +78,12 @@ $count_task_table = count($task_table);
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php
-                            $index=0;
-                            while($index<$count_interface_list):
-                        ?>
-
+                        <?php foreach ($categories as $category) : ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?=$interface_list[$index]; ?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $category; ?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
-                        <?php $index++; ?>
-                        <?php endwhile; ?>
-
+                        <?php endforeach; ?>
                     </ul>
                 </nav>
 
@@ -127,56 +115,36 @@ $count_task_table = count($task_table);
                 </div>
 
                 <table class="tasks">
-                    <?php
-                        $index = 0;
-                        while($index<$count_task_table):
-                            if(($task_table[$index]['doing_progress']) && ($show_complete_tasks)):
-                                echo '<tr class="tasks__item task task--completed">';
+                    <?php foreach ($tasks as $task) :
+                        if (($task['complete']) && ($show_complete_tasks)) :
                     ?>
-                        <td class="task__select">
-                            <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?=($task_table[$index]['doing_progress'])?' checked' : '' ?>>
-                                <span class="checkbox__text"><?=$task_table[$index]['task'] ?></span>
-                            </label>
-                        </td>
-
-                        <td class="task__date"><?=$task_table[$index]['date_of_doing'] ?></td>
-                        <td class="task__controls"></td>
+                        <tr class="tasks__item task task--completed">
+                            <td class="task__select">
+                                <label class="checkbox task__checkbox">
+                                    <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?= ($task['complete']) ? ' checked' : '' ?>>
+                                    <span class="checkbox__text"><?= $task['task'] ?></span>
+                                </label>
+                            </td>
+                            <td class="task__date"><?= $task['date_of_doing'] ?></td>
+                            <td class="task__controls"></td>
                         </tr>
                     <?php
-                            elseif($task_table[$index]['doing_progress']!=True):
-                                echo '<tr class="tasks__item task">';
+                        elseif (! $task['complete']) :
                     ?>
+                        <tr class="tasks__item task">
                             <td class="task__select">
-                            <label class="checkbox task__checkbox">
-                                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?=($task_table[$index]['doing_progress'])?' checked' : '' ?>>
-                                <span class="checkbox__text"><?=$task_table[$index]['task'] ?></span>
-                            </label>
-                        </td>
-
-                        <td class="task__date"><?=$task_table[$index]['date_of_doing'] ?></td>
-                        <td class="task__controls"></td>
+                                <label class="checkbox task__checkbox">
+                                    <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?= ($task['complete']) ? 'checked' : '' ?>>
+                                    <span class="checkbox__text"><?= $task['task'] ?></span>
+                                </label>
+                            </td>
+                            <td class="task__date"><?= $task['date_of_doing'] ?></td>
+                            <td class="task__controls"></td>
                         </tr>
                     <?php
                         endif;
-                        $index++;
-                        endwhile;
+                        endforeach;
                     ?>
-
-                    <?= ($show_complete_tasks ==1) ?
-                        '<tr class="tasks__item task task--completed">
-                            <td class="task__select">
-                                <label class="checkbox task__checkbox">
-                                    <input class="checkbox__input visually-hidden" type="checkbox" checked>
-                                    <span class="checkbox__text">Записаться на интенсив "Базовый PHP"</span>
-                                </label>
-                            </td>
-                            <td class="task__date">10.10.2019</td>
-                            <td class="task__controls"></td>
-                        </tr>'
-                        :''
-                    ?>
-
                 </table>
             </main>
         </div>
