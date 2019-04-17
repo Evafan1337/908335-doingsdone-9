@@ -38,6 +38,17 @@ $tasks = [
         'complete' => False
     ],
 ];
+function func_categories_count ($tasks , $name_of_category)
+{
+    $index = 0;
+    foreach ($tasks as $task) {
+        if( $task['category']===$name_of_category )
+            {
+                $index++;
+            };
+    }
+    echo $index;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ru">
@@ -81,7 +92,7 @@ $tasks = [
                         <?php foreach ($categories as $category) : ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?= $category; ?></a>
-                            <span class="main-navigation__list-item-count">0</span>
+                            <span class="main-navigation__list-item-count"><?= func_categories_count($tasks , $category) ?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
