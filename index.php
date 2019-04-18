@@ -38,16 +38,23 @@ $tasks = [
         'complete' => False
     ],
 ];
-function func_categories_count ($tasks , $name_of_category)
+
+/**
+* Функция подсчета количества дел, относящихся к проекту
+* @author Ershov Sasha
+* @return $index
+*/
+
+function count_categories($tasks, $name_of_category)
 {
     $index = 0;
     foreach ($tasks as $task) {
-        if( $task['category']===$name_of_category )
+        if ($task['category'] === $name_of_category)
             {
                 $index++;
             };
     }
-    echo $index;
+    return $index;
 }
 ?>
 <!DOCTYPE html>
@@ -92,7 +99,7 @@ function func_categories_count ($tasks , $name_of_category)
                         <?php foreach ($categories as $category) : ?>
                         <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="#"><?= $category; ?></a>
-                            <span class="main-navigation__list-item-count"><?= func_categories_count($tasks , $category) ?></span>
+                            <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
