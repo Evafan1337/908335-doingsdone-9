@@ -35,6 +35,19 @@
         <td class="task__controls"></td>
     </tr>
     <?php
+        elseif (time()-strtotime($task['date_of_doing'])<86400):
+    ?>
+    <tr class="tasks__item task task--important">
+        <td class="task__select">
+            <label class="checkbox task__checkbox">
+                <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="1"<?= ($task['complete']) ? 'checked' : '' ?>>
+                <span class="checkbox__text"><?= htmlspecialchars($task['task']) ?></span>
+            </label>
+        </td>
+        <td class="task__date"><?= htmlspecialchars($task['date_of_doing']) ?></td>
+        <td class="task__controls"></td>
+    </tr>
+    <?php
         elseif (! $task['complete']) :
     ?>
     <tr class="tasks__item task">

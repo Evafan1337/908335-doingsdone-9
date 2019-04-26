@@ -159,16 +159,4 @@ function count_categories($tasks, $name_of_category) {
     }
     return $index;
 }
-function delete_html_symbols($tasks){
-    //echo $tasks[0]['task'];
-    //echo '<br/>';
-    foreach ($tasks as $task){
-        foreach ($task as $item)
-        {
-            $item = htmlspecialchars($item);
-            echo $item;
-            echo '<br/>';
-        }
-    }
-}
 ?>
