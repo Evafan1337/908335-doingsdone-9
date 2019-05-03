@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS doingsdone;
-CREATE DATABASE IF NOT EXISTS doingsdone
+CREATE DATABASE doingsdone
   DEFAULT CHARACTER SET utf8
   DEFAULT COLLATE utf8_general_ci;
 USE doingsdone;
@@ -14,13 +14,15 @@ CREATE TABLE user (
 
 CREATE TABLE project (
   id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
+  user INT,
+  FOREIGN KEY(user) REFERENCES user(id),
   name CHAR(255)
 );
 
 CREATE TABLE task (
   user_id INT,
   project_id INT,
-  FOREIGN KEY(user_id) REFERENCES user(id),
+  FOREIGN KEY(user_id) REFERENCES project(user),
   FOREIGN KEY(project_id) REFERENCES project(id),
   task INT AUTO_INCREMENT PRIMARY KEY,
   date_create TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
