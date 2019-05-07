@@ -152,7 +152,7 @@ function include_template($name, array $data = []) {
 function count_categories($tasks, $name_of_category) {
     $index = 0;
     foreach ($tasks as $task) {
-        if ($task['category'] === $name_of_category)
+        if ($task['project_id'] === $name_of_category['id'])
             {
                 $index++;
             };

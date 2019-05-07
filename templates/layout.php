@@ -37,12 +37,17 @@
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach ($categories as $category) : ?>
+                        <?php foreach ($categories as $category) :
+                            $index=0;
+                        ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $category; ?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $category['name']; ?></a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
-                        <?php endforeach; ?>
+                        <?php
+                            $index++;
+                            endforeach;
+                        ?>
                     </ul>
                 </nav>
 

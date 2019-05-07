@@ -4,14 +4,14 @@ INSERT INTO user (email,name,password)
 VALUES
 ('email1@example.com','Саша','235235'),
 ('email2@example.com','Женя','235236'),
-('email3@example.com','Вася','235237');
+('email3@example.com','Константин','235237');
 
 INSERT INTO project(user,name) VALUES
 (1,'Входящие'),
-(2,'Учеба'),
+(3,'Учеба'),
 (1,'Работа'),
 (3,'Домашние дела'),
-(3,'Авто');
+(2,'Авто');
 
 INSERT INTO task (user_id,project_id,status,title,file)
 VALUES
@@ -21,7 +21,6 @@ VALUES
 (2,4,0,'Встреча с другом','link4'),
 (3,4,0,'Купить корм для кота','link4'),
 (1,4,0,'Заказать пиццу','link5');
-
 
 UPDATE task SET status =1
 WHERE task = 1;

@@ -1,6 +1,6 @@
 <?php
 $show_complete_tasks = rand(0, 1);
-$categories = ['incoming' => 'Входящие',
+/*$categories = ['incoming' => 'Входящие',
                 'study' => 'Учеба',
                 'job' => 'Работа',
                 'housework' => 'Домашние дела',
@@ -37,4 +37,4 @@ $tasks = [
         'category' => $categories['housework'],
         'complete' => False
     ],
-];?>
+];*/?>
