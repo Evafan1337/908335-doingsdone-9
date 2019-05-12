@@ -36,18 +36,24 @@
                 <h2 class="content__side-heading">Проекты</h2>
 
                 <nav class="main-navigation">
+                    <?php
+
+                    ?>
                     <ul class="main-navigation__list">
                         <?php foreach ($categories as $category) :
-                            $index=0;
+                            if($choosen_project === $category['id']) :
                         ?>
+                        <li class="main-navigation__list-item main-navigation__list-item--active">
+                        <?php else :?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $category['name']; ?></a>
+                        <?php endif; ?>
+                            <a class="main-navigation__list-item-link" href=<?= $choose_marker=translate_categories($category)?> >
+                                <?= $category['name']; ?>
+                                <?php $choosen_project = $category['id']; ?>
+                            </a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
-                        <?php
-                            $index++;
-                            endforeach;
-                        ?>
+                        <?php endforeach;?>
                     </ul>
                 </nav>
 

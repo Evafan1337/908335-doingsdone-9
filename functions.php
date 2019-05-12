@@ -145,18 +145,56 @@ function include_template($name, array $data = []) {
 /**
 * Функция подсчета количества дел, относящихся к проекту
 * @param array $tasks Список задач
-* @param string $name_of_category Название категории
+* @param string $category Категория, с которой будет вестись сравнение
 * @author Ershov Sasha
 * @return $index
 */
-function count_categories($tasks, $name_of_category) {
+function count_categories($tasks, $category) {
     $index = 0;
     foreach ($tasks as $task) {
-        if ($task['project_id'] === $name_of_category['id'])
+        if ($task['project_id'] === $category['id'])
             {
                 $index++;
             };
     }
     return $index;
 }
+
+/**
+* Функция соотношения названия проекта и url в ссылке
+* @param array $category массив проектов, с которым будет вестись соотношение
+* @return string
+*/
+function translate_categories($category){
+    if($category['name'] === 'Входящие')
+    {
+        echo 'incoming';
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Учеба')
+    {
+        echo 'study';
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Работа')
+    {
+        echo 'job';
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Домашние дела')
+    {
+        echo 'housework';
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Авто')
+    {
+        echo 'auto';
+        return $category['id'];
+    }
+}
+
+function choose_category($category){
+    return $category['id'];
+}
+
 ?>

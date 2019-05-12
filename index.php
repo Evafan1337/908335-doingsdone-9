@@ -1,4 +1,6 @@
 <?php
+$uri =$_SERVER['REQUEST_URI'];
+$_GET['test'] = 'test';
 require_once('data.php');
 require_once('functions.php');
 
@@ -32,6 +34,9 @@ else {
     $categories = mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
 };
 
+$previous_project = null;
+$choosen_project = $categories[0]['id'];
+
 $page_content = include_template('index.php', [
     'tasks' => $tasks,
     'show_complete_tasks' => $show_complete_tasks
@@ -40,7 +45,9 @@ $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'tasks' => $tasks,
     'content' => $page_content,
-    'title' => 'Дела в порядке'
+    'title' => 'Дела в порядке',
+    'uri' => $uri,
+    'choosen_project' => $choosen_project
 ]);
 print($layout_content);
 ?>
