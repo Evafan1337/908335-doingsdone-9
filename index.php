@@ -1,6 +1,6 @@
 <?php
 $uri =$_SERVER['REQUEST_URI'];
-$_GET['test'] = 'test';
+//$_GET['test'] = 'test';
 require_once('data.php');
 require_once('functions.php');
 
@@ -35,7 +35,7 @@ else {
 };
 
 $previous_project = null;
-$choosen_project = $categories[0]['id'];
+$choosen_project = null;
 
 $page_content = include_template('index.php', [
     'tasks' => $tasks,

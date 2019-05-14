@@ -31,3 +31,6 @@ CREATE TABLE task (
   file VARCHAR(255),
   deadline TIMESTAMP NULL
 );
+CREATE INDEX user ON user(id);
+CREATE INDEX project ON project(id);
+CREATE INDEX task ON task(user_id);

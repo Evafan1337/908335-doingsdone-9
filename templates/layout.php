@@ -37,19 +37,46 @@
 
                 <nav class="main-navigation">
                     <?php
-
+                        $choosen_marker='2';
                     ?>
                     <ul class="main-navigation__list">
                         <?php foreach ($categories as $category) :
-                            if($choosen_project === $category['id']) :
+                            echo $choosen_project;
+                            if($choosen_marker === $category['id']) :
                         ?>
                         <li class="main-navigation__list-item main-navigation__list-item--active">
+                        <?php echo 'main if!'; ?>
                         <?php else :?>
+                        <?php echo 'else'; ?>
                         <li class="main-navigation__list-item">
                         <?php endif; ?>
-                            <a class="main-navigation__list-item-link" href=<?= $choose_marker=translate_categories($category)?> >
+                            <a class="main-navigation__list-item-link" href=
+                            <?php
+                                //$choosen_marker=translate_categories($category)
+                                $choosen_project=choose_category($category);
+                                //echo '</br>';
+                                //echo $choosen_project;
+                                //echo 'test';
+
+                            ?>>
+                                <?php
+                                    if(isset($_GET['study2']))
+                                {
+                                    $choosen_marker = '2';
+                                    echo 'get check ok!';
+                                    echo '</br>';
+                                    echo $category['id'];
+                                    echo '</br>';
+                                    echo $choosen_marker;
+                                    echo '</br>';
+                                }
+                                ?>
                                 <?= $category['name']; ?>
-                                <?php $choosen_project = $category['id']; ?>
+                                <?php
+                                    //echo $choosen_marker;
+                                    var_dump($_GET);
+                                    //if(isset($_GET[$choosen_marker])){echo 'true!';}
+                                ?>
                             </a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>

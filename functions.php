@@ -168,33 +168,62 @@ function count_categories($tasks, $category) {
 function translate_categories($category){
     if($category['name'] === 'Входящие')
     {
-        echo 'incoming';
-        return $category['id'];
+        //echo '?incoming';
+        return '?incoming'.$category['id'];
     }
     elseif($category['name'] === 'Учеба')
     {
-        echo 'study';
-        return $category['id'];
+        //echo '?study';
+        return '?study'.$category['id'];
     }
     elseif($category['name'] === 'Работа')
     {
-        echo 'job';
-        return $category['id'];
+        //echo '?job';
+        return '?job'.$category['id'];
     }
     elseif($category['name'] === 'Домашние дела')
     {
-        echo 'housework';
-        return $category['id'];
+        //echo '?housework';
+        return '?housework'.$category['id'];
     }
     elseif($category['name'] === 'Авто')
     {
-        echo 'auto';
-        return $category['id'];
+        //echo '?auto';
+        return '?auto'.$category['id'];
     }
 }
 
 function choose_category($category){
-    return $category['id'];
+    if($category['name'] === 'Входящие')
+    {
+        //echo '?incoming';
+        echo '?incoming'.$category['id'];
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Учеба')
+    {
+        //echo '?study';
+        echo '?study'.$category['id'];
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Работа')
+    {
+        //echo '?job';
+        echo '?job'.$category['id'];
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Домашние дела')
+    {
+        //echo '?housework';
+        echo '?housework'.$category['id'];
+        return $category['id'];
+    }
+    elseif($category['name'] === 'Авто')
+    {
+        //echo '?auto';
+        echo '?auto'.$category['id'];
+        return $category['id'];
+    }
 }
 
 ?>
