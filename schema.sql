@@ -16,7 +16,8 @@ CREATE TABLE project (
   id INT AUTO_INCREMENT PRIMARY KEY UNIQUE,
   user INT,
   FOREIGN KEY(user) REFERENCES user(id),
-  name CHAR(255)
+  name CHAR(255),
+  alias CHAR(255)
 );
 
 CREATE TABLE task (

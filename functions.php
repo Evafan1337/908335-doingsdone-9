@@ -165,64 +165,53 @@ function count_categories($tasks, $category) {
 * @param array $category массив проектов, с которым будет вестись соотношение
 * @return string
 */
-function translate_categories($category){
-    if($category['name'] === 'Входящие')
-    {
-        //echo '?incoming';
-        return '?incoming'.$category['id'];
-    }
-    elseif($category['name'] === 'Учеба')
-    {
-        //echo '?study';
-        return '?study'.$category['id'];
-    }
-    elseif($category['name'] === 'Работа')
-    {
-        //echo '?job';
-        return '?job'.$category['id'];
-    }
-    elseif($category['name'] === 'Домашние дела')
-    {
-        //echo '?housework';
-        return '?housework'.$category['id'];
-    }
-    elseif($category['name'] === 'Авто')
-    {
-        //echo '?auto';
-        return '?auto'.$category['id'];
+function view_tasks($categories,$tasks){
+    foreach ($categories as $category) {
+            if(in_array($category['id'], $tasks)){
+                echo "is!";
+            }
+        }
+}
+
+/**
+* Функция проверки на корректность выбора категории и вывода ошибки 404 в случае неудачи
+* @param array $categories - массив проектов
+* @param string $choosen_project название выбранного проекта на английском языке
+*/
+function check_response($categories,$choosen_project){
+    $categories_aliases = array_column($categories, 'alias');
+    if ( $_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)){
+        http_response_code(404);
+        die('error 404!');
     }
 }
 
-function choose_category($category){
-    if($category['name'] === 'Входящие')
-    {
-        //echo '?incoming';
-        echo '?incoming'.$category['id'];
-        return $category['id'];
+function get_categories(mysqli $con){
+    $sql_categories = 'SELECT name,id,alias FROM project
+                    WHERE user = 3;';
+    $res_categories = mysqli_query($con, $sql_categories);
+    return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
+}
+
+function get_tasks_by_categories(mysqli $con,$id_choosen_project){
+
+    if($id_choosen_project === -1){
+        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create FROM user u
+                INNER JOIN task t
+                ON u.id = t.user_id
+                WHERE u.id = 3;';
+        $res_tasks = mysqli_query($con , $sql_tasks);
+        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
-    elseif($category['name'] === 'Учеба')
+    else
     {
-        //echo '?study';
-        echo '?study'.$category['id'];
-        return $category['id'];
-    }
-    elseif($category['name'] === 'Работа')
-    {
-        //echo '?job';
-        echo '?job'.$category['id'];
-        return $category['id'];
-    }
-    elseif($category['name'] === 'Домашние дела')
-    {
-        //echo '?housework';
-        echo '?housework'.$category['id'];
-        return $category['id'];
-    }
-    elseif($category['name'] === 'Авто')
-    {
-        //echo '?auto';
-        echo '?auto'.$category['id'];
-        return $category['id'];
+        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create FROM user u
+                INNER JOIN task t
+                ON u.id = t.user_id
+                WHERE u.id = 3
+                AND t.project_id = '.$id_choosen_project.';';
+        $res_tasks = mysqli_query($con , $sql_tasks);
+        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
 }
 

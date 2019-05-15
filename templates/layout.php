@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <title><?= $title; ?></title>
@@ -36,48 +35,11 @@
                 <h2 class="content__side-heading">Проекты</h2>
 
                 <nav class="main-navigation">
-                    <?php
-                        $choosen_marker='2';
-                    ?>
                     <ul class="main-navigation__list">
-                        <?php foreach ($categories as $category) :
-                            echo $choosen_project;
-                            if($choosen_marker === $category['id']) :
-                        ?>
-                        <li class="main-navigation__list-item main-navigation__list-item--active">
-                        <?php echo 'main if!'; ?>
-                        <?php else :?>
-                        <?php echo 'else'; ?>
-                        <li class="main-navigation__list-item">
-                        <?php endif; ?>
-                            <a class="main-navigation__list-item-link" href=
-                            <?php
-                                //$choosen_marker=translate_categories($category)
-                                $choosen_project=choose_category($category);
-                                //echo '</br>';
-                                //echo $choosen_project;
-                                //echo 'test';
-
-                            ?>>
-                                <?php
-                                    if(isset($_GET['study2']))
-                                {
-                                    $choosen_marker = '2';
-                                    echo 'get check ok!';
-                                    echo '</br>';
-                                    echo $category['id'];
-                                    echo '</br>';
-                                    echo $choosen_marker;
-                                    echo '</br>';
-                                }
-                                ?>
-                                <?= $category['name']; ?>
-                                <?php
-                                    //echo $choosen_marker;
-                                    var_dump($_GET);
-                                    //if(isset($_GET[$choosen_marker])){echo 'true!';}
-                                ?>
-                            </a>
+                        <?php foreach ($categories as $category) :?>
+                        <!-- <li class="main-navigation__list-item main-navigation__list-item--active"> -->
+                        <li class="main-navigation__list-item <?= ($choosen_project === $category['alias']) ? 'main-navigation__list-item--active' : ''?>">
+                            <a class="main-navigation__list-item-link" href="index.php?category=<?= $category['alias']; ?>"><?= $category['name']; ?> </a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
                         <?php endforeach;?>
