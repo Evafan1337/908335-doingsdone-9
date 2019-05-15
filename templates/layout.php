@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <title><?= $title; ?></title>
@@ -37,17 +36,13 @@
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach ($categories as $category) :
-                            $index=0;
-                        ?>
-                        <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $category['name']; ?></a>
+                        <?php foreach ($categories as $category) :?>
+                        <!-- <li class="main-navigation__list-item main-navigation__list-item--active"> -->
+                        <li class="main-navigation__list-item <?= ($choosen_project === $category['alias']) ? 'main-navigation__list-item--active' : ''?>">
+                            <a class="main-navigation__list-item-link" href="index.php?category=<?= $category['alias']; ?>"><?= $category['name']; ?> </a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
-                        <?php
-                            $index++;
-                            endforeach;
-                        ?>
+                        <?php endforeach;?>
                     </ul>
                 </nav>
 
