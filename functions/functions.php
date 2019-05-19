@@ -161,19 +161,6 @@ function count_categories($tasks, $category) {
 }
 
 /**
-* Функция соотношения названия проекта и url в ссылке
-* @param array $category массив проектов, с которым будет вестись соотношение
-* @return string
-*/
-function view_tasks($categories,$tasks){
-    foreach ($categories as $category) {
-            if(in_array($category['id'], $tasks)){
-                echo "is!";
-            }
-        }
-}
-
-/**
 * Функция проверки на корректность выбора категории и вывода ошибки 404 в случае неудачи
 * @param array $categories - массив проектов
 * @param string $choosen_project название выбранного проекта на английском языке
@@ -185,34 +172,15 @@ function check_response($categories,$choosen_project){
         die('error 404!');
     }
 }
-
-function get_categories(mysqli $con){
-    $sql_categories = 'SELECT name,id,alias FROM project
-                    WHERE user = 3;';
-    $res_categories = mysqli_query($con, $sql_categories);
-    return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
-}
-
-function get_tasks_by_categories(mysqli $con,$id_choosen_project){
-
-    if($id_choosen_project === -1){
-        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create FROM user u
-                INNER JOIN task t
-                ON u.id = t.user_id
-                WHERE u.id = 3;';
-        $res_tasks = mysqli_query($con , $sql_tasks);
-        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
-    }
-    else
-    {
-        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create FROM user u
-                INNER JOIN task t
-                ON u.id = t.user_id
-                WHERE u.id = 3
-                AND t.project_id = '.$id_choosen_project.';';
-        $res_tasks = mysqli_query($con , $sql_tasks);
-        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
-    }
-}
+/**
+* Функция переноса загруженного файла из служебной директории в ./uploads
+* @return string $file_url
+*/
+function move_file_to_uploads(){
+    $file_name = $_FILES['file']['name'];
+    $file_path = dirname(dirname(__DIR__. '/uploads/'));
+    $file_url = '/uploads/' . $file_name;
+    move_uploaded_file($_FILES['file']['tmp_name'], $file_path.$file_name);
+return $file_url;}
 
 ?>
