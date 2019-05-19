@@ -31,6 +31,11 @@
                     <span class="checkbox__text"><?= htmlspecialchars($task['title']) ?></span>
             </label>
         </td>
+        <?php if( strcmp('/uploads/', $task['file'])) : ?>
+        <td class="task__file"><a href="#"><?= $task['file'] ?></a></td>
+        <?php else : ?>
+        <td class="task__file"><a href="#"></a></td>
+        <?php endif; ?>
         <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
         <td class="task__controls"></td>
     </tr>
@@ -44,6 +49,11 @@
                 <span class="checkbox__text"><?= htmlspecialchars($task['title']) ?></span>
             </label>
         </td>
+        <?php if( strcmp('/uploads/', $task['file'])) : ?>
+        <td class="task__file"><a href="#"><?= $task['file'] ?></a></td>
+        <?php else : ?>
+        <td class="task__file"><a href="#"></a></td>
+        <?php endif; ?>
         <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
         <td class="task__controls"></td>
     </tr>
@@ -57,6 +67,11 @@
                 <span class="checkbox__text"><?= htmlspecialchars($task['title']) ?></span>
             </label>
         </td>
+        <?php if( strcmp('/uploads/', $task['file'])) : ?>
+        <td class="task__file"><a href="#"><?= $task['file'] ?></a></td>
+        <?php else : ?>
+        <td class="task__file"><a href="#"></a></td>
+        <?php endif; ?>
         <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
         <td class="task__controls"></td>
     </tr>
