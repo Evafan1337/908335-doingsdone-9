@@ -30,7 +30,7 @@ CREATE TABLE task (
   status TINYINT(1) DEFAULT '0',
   title CHAR(255) NOT NULL,
   file VARCHAR(255),
-  deadline TIMESTAMP NULL
+  deadline DATE NULL
 );
 CREATE INDEX user ON user(id);
 CREATE INDEX project ON project(id);

@@ -22,8 +22,8 @@
 
           <div class="form__row">
             <label class="form__label" for="date">Дата выполнения</label>
-            <?= (empty($_POST['date'])&&(!empty($_POST))) ? '<p class ="form__message">Выберите корректную дату!</p>' : '' ?>
-            <input class="form__input form__input--date <?= (empty($_POST['date'])&&(!empty($_POST))) ? 'form__input--error' : ''?>" type="text" name="date" id="date" value="" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+            <?= ((!empty($_POST)) && !empty($_POST['date']) && strtotime($_POST['date'])<=time()) ? '<p class ="form__message">Выберите корректную дату!</p>' : '' ?>
+            <input class="form__input form__input--date <?= ((!empty($_POST)) && !empty($_POST['date']) && strtotime($_POST['date'])<=time()) ? 'form__input--error' : ''?>" type="text" name="date" id="date" value="" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
           </div>
 
           <div class="form__row">

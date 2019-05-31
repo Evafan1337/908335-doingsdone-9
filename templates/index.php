@@ -36,7 +36,11 @@
         <?php else : ?>
         <td class="task__file"><a href="#"></a></td>
         <?php endif; ?>
-        <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
+        <?php if($task['deadline'] === $null_date) : ?>
+        <td class="task__date"></td>
+        <?php else : ?>
+        <td class="task__date"><?= htmlspecialchars($task['deadline']) ?></td>
+        <?php endif; ?>
         <td class="task__controls"></td>
     </tr>
     <?php
@@ -54,7 +58,11 @@
         <?php else : ?>
         <td class="task__file"><a href="#"></a></td>
         <?php endif; ?>
-        <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
+        <?php if($task['deadline'] === $null_date) : ?>
+        <td class="task__date"></td>
+        <?php else : ?>
+        <td class="task__date"><?= htmlspecialchars($task['deadline']) ?></td>
+        <?php endif; ?>
         <td class="task__controls"></td>
     </tr>
     <?php
@@ -72,7 +80,11 @@
         <?php else : ?>
         <td class="task__file"><a href="#"></a></td>
         <?php endif; ?>
-        <td class="task__date"><?= htmlspecialchars($task['date_create']) ?></td>
+        <?php if($task['deadline'] === $null_date) : ?>
+        <td class="task__date"></td>
+        <?php else : ?>
+        <td class="task__date"><?= htmlspecialchars($task['deadline']) ?></td>
+        <?php endif; ?>
         <td class="task__controls"></td>
     </tr>
     <?php
