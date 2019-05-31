@@ -1,3 +1,13 @@
+<?php
+    // session_start();
+    // var_dump($_POST);
+    // var_dump($_SESSION);
+
+    // $str = 'as007ershov@gmail.com';
+    // if(preg_match("/[0-9a-z]+@[a-z]+[.]+[a-z]/", $str)){
+    //     echo 'true!';
+    // }
+?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -33,7 +43,7 @@
             <p>После создания аккаунта, пользователь может начать вносить свои дела, деля их по проектам и указывая сроки.</p>
           </div>
 
-          <a class="welcome__button button" href="register.html">Зарегистрироваться</a>
+          <a class="welcome__button button" href="/registration.php">Зарегистрироваться</a>
         </section>
       </div>
     </div>
