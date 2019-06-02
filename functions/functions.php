@@ -151,14 +151,17 @@ function include_template($name, array $data = []) {
 */
 function count_categories($tasks, $category) {
     $index = 0;
-    foreach ($tasks as $task) {
+    if(is_array($tasks)){
+        foreach ($tasks as $task) {
         if ($task['project_id'] === $category['id'])
             {
                 $index++;
             };
+        }
+        return $index;
     }
-    return $index;
-}
+
+return 0;}
 
 /**
 * Функция проверки на корректность выбора категории и вывода ошибки 404 в случае неудачи
@@ -166,11 +169,14 @@ function count_categories($tasks, $category) {
 * @param string $choosen_project название выбранного проекта на английском языке
 */
 function check_response($categories,$choosen_project){
-    $categories_aliases = array_column($categories, 'alias');
-    if ( $_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)){
-        http_response_code(404);
-        die('error 404!');
+    if(isset($categories)){
+        $categories_aliases = array_column($categories, 'alias');
+        if ( $_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)){
+            http_response_code(404);
+            die('error 404!');
     }
+    }
+
 }
 /**
 * Функция переноса загруженного файла из служебной директории в ./uploads
@@ -183,6 +189,11 @@ function move_file_to_uploads(){
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path.$file_name);
 return $file_url;}
 
+/**
+* Функция перевода с русской раскладки на английскую,с учетом пробелов,перевода каретки и тд..
+* @param $s данные, которые необходимо перевести
+* @return $s переведенные данные
+*/
 function make_transliteration($s) {
   $s = (string) $s;
   $s = strip_tags($s);
@@ -196,8 +207,48 @@ function make_transliteration($s) {
   return $s;
 }
 
+
+/**
+* Функция получения одномерного массива эл.почт пользователей из многомерного массива всей информации о пользователях
+* @param $users массив инф-ии обо всех пользователях
+* @return $users_emails_list одномерный массив эл.почт
+*/
 function get_emails_list($users){
     $users_emails_list = array_column($users, 'email');
 return $users_emails_list;}
+
+/**
+* Функция, осуществляющая проверку и вход пользователя на сайт
+* @param $users массив пользователей
+* @param $user_email эл.почта пользователя, проходящего авторизацию
+* @param $user_password пароль пользователя, проходящего авторизацию
+* @return int Идентификатор успешности/не успешности проведения регистрации
+*/
+function login_user($users, $user_email, $user_password){
+    $users_emails_list = array_column($users, 'email');
+    $users_passwords_hash_list = array_column($users, 'password');
+    $check_email = in_array($user_email, $users_emails_list);
+    $check_password = False;
+
+    foreach ($users as $user) {
+        if($user['email'] === $user_email && password_verify($user_password, $user['password']) ){
+            $check_password = True;
+            break;
+        }
+    }
+
+    if( $check_email && $check_password){
+        foreach ($users as $user) {
+            if($user['email'] === $user_email){
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['password'] = $user_password;
+            }
+        }
+
+
+    return 1;
+    }
+return 0;}
 
 ?>

@@ -1,5 +1,6 @@
 <?php
 require_once('assembling.php');
+session_start();
 if(!empty($_POST['name'])){
     $new_category_name = $_POST['name'];
     $redirect_var = add_category($con, $new_category_name);
