@@ -6,12 +6,20 @@
  * @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
  */
 function get_categories(mysqli $con){
-    $sql_categories = 'SELECT name,id,alias FROM project
-                    WHERE user = 3;';
-    $res_categories = mysqli_query($con, $sql_categories);
-    return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
+    if(!empty($_SESSION)){
+        $sql_categories = 'SELECT name,id,alias FROM project
+                    WHERE user = "'.$_SESSION['id'].'";';
+        $res_categories = mysqli_query($con, $sql_categories);
+        return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
+    }
+
 }
 
+/**
+* Функция, отправляющая запрос в БД и сохраняющая данные пользователей из БД в ассоциативном массиве
+* @param mysqli $con Хранит данные о текущем подключении
+* @return mysqli_fetch_all($res_users, MYSQLI_ASSOC) вывод функции, заполняющей ассоциативный массив
+*/
 function get_users(mysqli $con){
     $sql_users = 'SELECT id,reg_date,email,name,password FROM user;';
     $res_users = mysqli_query($con, $sql_users);
@@ -26,26 +34,34 @@ function get_users(mysqli $con){
 */
 function get_tasks_by_categories(mysqli $con, $id_choosen_project){
 
-    if($id_choosen_project === -1){
+    if($id_choosen_project === -1 && !empty($_SESSION)){
         $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
-                WHERE u.id = 3;';
+                WHERE u.id = "'.$_SESSION['id'].'";';
         $res_tasks = mysqli_query($con , $sql_tasks);
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
-    else
+    elseif(!empty($_SESSION))
     {
         $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
-                WHERE u.id = 3
-                AND t.project_id = '.$id_choosen_project.';';
+                WHERE u.id = "'.$_SESSION['id'].'"
+                AND t.project_id = "'.$id_choosen_project.'";';
         $res_tasks = mysqli_query($con , $sql_tasks);
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
 }
-
+/**
+* Функция регистрации нового пользователя и занесение его данных в БД
+* @param $user_name имя пользователя
+* @param $user_password пароль пользователя
+* @param $user_email эл.почта пользователя
+* @param $users массив данных о пользователях
+* @param mysqli $con Хранит данные о текущем подключении
+* @return int Идентификатор успешности/не успешности проведения действия
+*/
 function add_user($user_name, $user_password, $user_email, $users, $con){
     $check_email = False;
     $check_already_registered_email = True;
@@ -55,14 +71,9 @@ function add_user($user_name, $user_password, $user_email, $users, $con){
             $check_already_registered_email = False;
         }
     }
-
     if(filter_var($user_email, FILTER_VALIDATE_EMAIL)){
         $check_email = True;
     }
-
-    //echo $check_email;
-    // $check_already_registered_email;
-
     if($check_email && $check_already_registered_email){
         $sql_add_user = 'INSERT INTO user (email, name, password) VALUES (?,?,?)';
         $stmt_add_user = db_get_prepare_stmt($con, $sql_add_user,[
@@ -71,30 +82,31 @@ function add_user($user_name, $user_password, $user_email, $users, $con){
             'password' => password_hash($user_password, PASSWORD_DEFAULT)
         ]);
         $res_sql_add_user = mysqli_stmt_execute($stmt_add_user);
+        session_start();
+        $_SESSION['name'] = $_POST['name'];
         if($res_sql_add_user === false){
                 die('Error while working with SQL request '.mysqli_error($con));
         }
-        session_start();
-        $_SESSION['name'] = $_POST['name'];
         return 1;
     }
 
-}
+return 0;}
 
 /**
 * Функция добавления задачи в задачи и проверка данных на соответствие правилам
 * @param mysqli $con хранит данные о текущем подключении
 * @param array $categories массив с текущими проектами
 * @param array $tasks массив с текущими задачами
+* @return int Идентификатор успешности/не успешности проведения действия
 */
 function add_task(mysqli $con, $categories, $tasks, $task_name, $task_project, $task_date){
     if(!empty($_FILES)){
         $file_uri = move_file_to_uploads();
     }
-    if(strtotime($_POST['date']) >= strtotime('today midnight') || empty($_POST['date'])){
+    if(strtotime($_POST['date']) >= strtotime('today midnight') || empty($_POST['date'] && !empty($_SESSION))){
         $sql_add_task = 'INSERT INTO task (user_id, project_id, status, title, file, deadline) VALUES(?,?,?,?,?,?)';
         $stmt_add_task = db_get_prepare_stmt($con, $sql_add_task,[
-            'user_id' => 3,
+            'user_id' => $_SESSION['id'],
             'project_id' => $task_project,
             'status' => 0,
             'title' => $task_name,
@@ -107,31 +119,34 @@ function add_task(mysqli $con, $categories, $tasks, $task_name, $task_project, $
              }
         return 1;
      }
-}
+return 0;}
+
 /**
 * Функция добавления нового проекта (категории) в базу данных
 * @param mysqli $con хранит данные о текущем подключении
 * @param string $new_category_name название новой категории
+* @return int Идентификатор успешности/не успешности проведения действия
 */
 function add_category(mysqli $con , $new_category_name){
-    $alias = make_transliteration($new_category_name);
-    $sql_add_category = 'INSERT INTO project (user, name, alias) VALUES(?,?,?)';
-    $stmt_add_category = db_get_prepare_stmt($con, $sql_add_category,[
-        'user' => 3,
-        'name' => $new_category_name,
-        'alias' => $alias
-    ]);
-    $res_sql_add_category = mysqli_stmt_execute($stmt_add_category);
-    if($res_sql_add_category === false){
-                die('Error while working with SQL request '.mysqli_error($con));
+    if( !empty($_SESSION)){
+        $alias = make_transliteration($new_category_name);
+        $sql_add_category = 'INSERT INTO project (user, name, alias) VALUES(?,?,?)';
+        $stmt_add_category = db_get_prepare_stmt($con, $sql_add_category,[
+            'user' => $_SESSION['id'],
+            'name' => $new_category_name,
+            'alias' => $alias
+        ]);
+        $res_sql_add_category = mysqli_stmt_execute($stmt_add_category);
+        if($res_sql_add_category === false){
+                    die('Error while working with SQL request '.mysqli_error($con));
+        }
+        return 1;
     }
-    return 1;
-}
+return 0;}
 
 $con = mysqli_connect('localhost','root','2k91abin1420pirzy','doingsdone');
 
 mysqli_set_charset($con, 'utf8');
-
 $categories = get_categories($con);
 $users = get_users($con);
 
@@ -165,7 +180,7 @@ if(!$con){
 else {
 
     if(empty($tasks) && empty($categories)){
-        die('Error while working with SQL request'.mysqli_error($con));
+        //die('Error while working with SQL request'.mysqli_error($con));
     }
 };
 

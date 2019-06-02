@@ -21,8 +21,9 @@
 </div>
 
 <table class="tasks">
-    <?php foreach ($tasks as $task) :
-        if (($task['status']) && ($show_complete_tasks)) :
+    <?php if(is_array($tasks)):
+            foreach ($tasks as $task) :
+            if (($task['status']) && ($show_complete_tasks)) :
     ?>
     <tr class="tasks__item task task--completed">
         <td class="task__select">
@@ -90,5 +91,6 @@
     <?php
         endif;
         endforeach;
+        endif;
     ?>
 </table>

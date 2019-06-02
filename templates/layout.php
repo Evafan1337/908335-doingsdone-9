@@ -22,8 +22,8 @@
 
                 <div class="main-header__side-item user-menu">
                     <div class="user-menu__data">
-                        <p>Константин</p>
-                        <a href="#">Выйти</a>
+                        <p><?= $_SESSION['name'] ?></p>
+                        <a href="index.php?exit=true">Выйти</a>
                     </div>
                 </div>
             </div>
@@ -35,13 +35,18 @@
 
                 <nav class="main-navigation">
                     <ul class="main-navigation__list">
-                        <?php foreach ($categories as $category) :?>
+                        <?php
+                            if(is_array($categories)):
+                                foreach ($categories as $category) :?>
                         <!-- <li class="main-navigation__list-item main-navigation__list-item--active"> -->
-                        <li class="main-navigation__list-item <?= ($choosen_project === $category['alias']) ? 'main-navigation__list-item--active' : ''?>">
-                            <a class="main-navigation__list-item-link" href="index.php?category=<?= $category['alias']; ?>"><?= $category['name']; ?> </a>
+                        <li class="main-navigation__list-item <?= ($choosen_project === $category['id']) ? 'main-navigation__list-item--active' : ''?>">
+                            <a class="main-navigation__list-item-link" href="index.php?category=<?= $category['id']; ?>"><?= $category['name']; ?> </a>
                             <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
                         </li>
-                        <?php endforeach;?>
+                        <?php
+                            endforeach;
+                            endif;
+                        ?>
                     </ul>
                 </nav>
 
