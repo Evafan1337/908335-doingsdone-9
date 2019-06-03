@@ -33,18 +33,19 @@ function get_users(mysqli $con){
 * @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
 */
 function get_tasks_by_categories(mysqli $con, $id_choosen_project){
-
+    //echo $id_choosen_project;
     if($id_choosen_project === -1 && !empty($_SESSION)){
-        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
+        $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
                 WHERE u.id = "'.$_SESSION['id'].'";';
         $res_tasks = mysqli_query($con , $sql_tasks);
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
+
     elseif(!empty($_SESSION))
     {
-        $sql_tasks = 'SELECT t.title,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
+        $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
                 WHERE u.id = "'.$_SESSION['id'].'"
@@ -53,6 +54,42 @@ function get_tasks_by_categories(mysqli $con, $id_choosen_project){
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
 }
+
+function get_tasks_by_sorting($sorting_condition, $tasks){
+    if(is_array($tasks)){
+        $date_tomorrow = strtotime("+1 day");
+        foreach ($tasks as $key => $task) {
+            if($sorting_condition === 'today' && ($tasks[$key]['deadline']) !== date('Y-m-d')){
+                unset($tasks[$key]);
+            }
+            elseif ($sorting_condition === 'tomorrow' && ($tasks[$key]['deadline']) !== date('Y-m-d',$date_tomorrow)) {
+                unset($tasks[$key]);
+            }
+            elseif($sorting_condition === 'outdated' && $tasks[$key]['status'] !== '1' && (strtotime($tasks[$key]['deadline'])) >= strtotime('today midnight')){
+                unset($tasks[$key]);
+            }
+        }
+        return $tasks;
+    }
+}
+
+function get_completed_tasks(mysqli $con, $tasks){
+    $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
+                INNER JOIN task t
+                ON u.id = t.user_id
+                WHERE u.id = "'.$_SESSION['id'].'"
+                AND t.status = 1';
+    $res_tasks = mysqli_query($con , $sql_tasks);
+    return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
+}
+
+function set_completed(mysqli $con, $task_completed_id){
+            $sql_update_querie = 'UPDATE task t SET
+                                t.status = 1
+                                WHERE t.task = "'.$task_completed_id.'";';
+            $res_update = mysqli_query($con, $sql_update_querie);
+}
+
 /**
 * Функция регистрации нового пользователя и занесение его данных в БД
 * @param $user_name имя пользователя
@@ -62,7 +99,7 @@ function get_tasks_by_categories(mysqli $con, $id_choosen_project){
 * @param mysqli $con Хранит данные о текущем подключении
 * @return int Идентификатор успешности/не успешности проведения действия
 */
-function add_user($user_name, $user_password, $user_email, $users, $con){
+function add_user($user_name, $user_password, $user_email, $users, mysqli $con){
     $check_email = False;
     $check_already_registered_email = True;
 
@@ -84,6 +121,12 @@ function add_user($user_name, $user_password, $user_email, $users, $con){
         $res_sql_add_user = mysqli_stmt_execute($stmt_add_user);
         session_start();
         $_SESSION['name'] = $_POST['name'];
+        $sql_get_user_id = 'SELECT id from user
+                            WHERE user.email ="'.$user_email.'";';
+        $res_sql_get_user_id = mysqli_query($con,$sql_get_user_id);
+        $user_id_array = mysqli_fetch_all($res_sql_get_user_id, MYSQLI_ASSOC);
+        //var_dump($user_id_array);
+        $_SESSION['id'] = $user_id_array[0]['id'];
         if($res_sql_add_user === false){
                 die('Error while working with SQL request '.mysqli_error($con));
         }
