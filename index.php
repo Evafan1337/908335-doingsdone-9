@@ -2,8 +2,8 @@
 require_once('assembling.php');
 
 session_start();
-var_dump($_SESSION);
-var_dump($_GET);
+//var_dump($_SESSION);
+//var_dump($_GET);
 $categories = get_categories($con);
 $users = get_users($con);
 
@@ -17,9 +17,9 @@ if(isset($_GET['category'])&& !empty($_SESSION)){
 if(isset($_GET['task_id'])){
     set_completed($con, $_GET['task_id']);
 }
-
+$tasks_full = get_tasks_by_categories($con, -1);
 if($_GET['category'] === 'null'){
-    echo 'usual';
+    //echo 'usual';
     $tasks = get_tasks_by_categories($con,-1);
 }
 else{
@@ -50,6 +50,20 @@ if(empty($_SESSION['name']) || $_SESSION['name'] === 'null'){
     header('Location: pages/guest.php');
 }
 
+if(isset($_GET['search-form']) && !empty($_SESSION)){
+    $tasks = get_tasks_by_search($con, trim($_GET['search-form']));
+    if(empty($tasks)){
+        $_SESSION['search-result'] = 'no';
+    }
+    else{
+        $_SESSION['search-result'] = 'yes';
+    }
+}
+
+if(empty($_GET['search-form']) && !empty($_SESSION['search-result'])){
+    $_SESSION['search-result'] = 'null';
+}
+
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 $null_date = '1970-01-01';
 
@@ -62,6 +76,7 @@ $page_content = include_template('index.php', [
 $layout_content = include_template('layout.php', [
     'categories' => $categories,
     'tasks' => $tasks,
+    'tasks_full' => $tasks_full,
     'content' => $page_content,
     'title' => 'Дела в порядке',
     'choosen_project' => $choosen_project

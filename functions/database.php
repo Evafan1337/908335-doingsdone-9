@@ -65,7 +65,7 @@ function get_tasks_by_sorting($sorting_condition, $tasks){
             elseif ($sorting_condition === 'tomorrow' && ($tasks[$key]['deadline']) !== date('Y-m-d',$date_tomorrow)) {
                 unset($tasks[$key]);
             }
-            elseif($sorting_condition === 'outdated' && $tasks[$key]['status'] !== '1' && (strtotime($tasks[$key]['deadline'])) >= strtotime('today midnight')){
+            elseif($sorting_condition === 'outdated' && $tasks[$key]['status'] !== '1' && ((strtotime($tasks[$key]['deadline'])) >= strtotime('today midnight') || $tasks[$key] !== '1970-01-01')){
                 unset($tasks[$key]);
             }
         }
@@ -79,6 +79,16 @@ function get_completed_tasks(mysqli $con, $tasks){
                 ON u.id = t.user_id
                 WHERE u.id = "'.$_SESSION['id'].'"
                 AND t.status = 1';
+    $res_tasks = mysqli_query($con , $sql_tasks);
+    return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
+}
+//select deadline from task where match (title) against ('завтра');
+function get_tasks_by_search(mysqli $con, $search_word){
+    $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
+                INNER JOIN task t
+                ON u.id = t.user_id
+                WHERE u.id = "'.$_SESSION['id'].'"
+                AND MATCH (title) AGAINST ("'.$search_word.'");';
     $res_tasks = mysqli_query($con , $sql_tasks);
     return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
 }

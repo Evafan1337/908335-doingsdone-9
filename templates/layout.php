@@ -41,7 +41,7 @@
                         <!-- <li class="main-navigation__list-item main-navigation__list-item--active"> -->
                         <li class="main-navigation__list-item <?= ($choosen_project === $category['id']) ? 'main-navigation__list-item--active' : ''?>">
                             <a class="main-navigation__list-item-link" href="index.php?category=<?= $category['id']; ?>"><?= $category['name']; ?> </a>
-                            <span class="main-navigation__list-item-count"><?= count_categories($tasks, $category) ?></span>
+                            <span class="main-navigation__list-item-count"><?= count_categories($tasks_full, $category) ?></span>
                         </li>
                         <?php
                             endforeach;
