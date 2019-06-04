@@ -1,15 +1,22 @@
 <?php
 
+    //select deadline from task where match (title) against ('завтра');
+    var_dump($_GET);
+    var_dump($_SESSION);
+    //var_dump($tasks);
+    echo '<br>';
+    //echo trim($_POST['search-form']);
     //echo date('Y-m-d');
-    $date = '2019-06-03';
-    $date_date = strtotime($date);
-    echo date('Y-m-d',$date_date);
+    //$date = '2019-06-03';
+    //$date_date = strtotime($date);
+    //echo date('Y-m-d',$date_date);
+
 ?>
 
 <h2 class="content__main-heading">Список задач</h2>
 
-<form class="search-form" action="index.php" method="post" autocomplete="off">
-    <input class="search-form__input" type="text" name="" value="" placeholder="Поиск по задачам">
+<form class="search-form" action="index.php" method="get" autocomplete="off">
+    <input class="search-form__input" type="text" name="search-form" value="" placeholder="Поиск по задачам">
 
     <input class="search-form__submit" type="submit" name="" value="Искать">
 </form>
@@ -29,7 +36,8 @@
 </div>
 
 <table class="tasks">
-    <?php if(is_array($tasks)):
+    <?php
+        if(is_array($tasks) && (!isset($_SESSION['search-result']) || (isset($_SESSION['search-result']) &&(($_SESSION['search-result']) !== 'no') || $_SESSION['search-result'] === 'null' ))):
             foreach ($tasks as $task) :
                 if($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')):
     ?>
@@ -62,6 +70,8 @@
     <?php
         endif;
         endforeach;
-        endif;
     ?>
+    <?php else : ?>
+        <p>Ничего не найдено по вашему запросу</p>
+    <?php endif; ?>
 </table>
