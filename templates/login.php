@@ -4,7 +4,6 @@
           <div class="form__row">
             <label class="form__label" for="email">E-mail <sup>*</sup></label>
             <input class="form__input <?=(empty($_SESSION) && !empty($_POST)) ? 'form__input--error' : '' ?>" type="text" name="email" id="email" value="" placeholder="Введите e-mail">
-            <!-- <input class="form__input form__input--error" type="text" name="email" id="email" value="" placeholder="Введите e-mail"> -->
             <?php if(empty($_SESSION) && !empty($_POST)): ?>
             <p class="form__message">E-mail введён некорректно</p>
             <?php endif; ?>

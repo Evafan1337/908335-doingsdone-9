@@ -7,8 +7,9 @@
  */
 function get_categories(mysqli $con){
     if(!empty($_SESSION)){
+        $user_id = mysqli_real_escape_string($con, $_SESSION['id']);
         $sql_categories = 'SELECT name,id,alias FROM project
-                    WHERE user = "'.$_SESSION['id'].'";';
+                    WHERE user = "'.$user_id.'";';
         $res_categories = mysqli_query($con, $sql_categories);
         return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
     }
@@ -33,18 +34,18 @@ function get_users(mysqli $con){
 * @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
 */
 function get_tasks_by_categories(mysqli $con, $id_choosen_project){
-    //echo $id_choosen_project;
     if($id_choosen_project === -1 && !empty($_SESSION)){
+        $user_id = mysqli_real_escape_string($con, $_SESSION['id']);
         $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
-                WHERE u.id = "'.$_SESSION['id'].'";';
+                WHERE u.id = "'.$user_id.'";';
         $res_tasks = mysqli_query($con , $sql_tasks);
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
-
     elseif(!empty($_SESSION))
     {
+        $id_choosen_project = mysqli_real_escape_string($con, $id_choosen_project);
         $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
@@ -53,8 +54,14 @@ function get_tasks_by_categories(mysqli $con, $id_choosen_project){
         $res_tasks = mysqli_query($con , $sql_tasks);
         return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
-}
+return 0;}
 
+/**
+* Функция выбора задач, соответствующих сортировке
+* @param string $sorting_condition состояние условия сортировки
+* @param array $tasks массив текущих задач
+* @return array $tasks обработанный масив текущих задач
+*/
 function get_tasks_by_sorting($sorting_condition, $tasks){
     if(is_array($tasks)){
         $date_tomorrow = strtotime("+1 day");
@@ -73,31 +80,37 @@ function get_tasks_by_sorting($sorting_condition, $tasks){
     }
 }
 
-function get_completed_tasks(mysqli $con, $tasks){
-    $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
-                INNER JOIN task t
-                ON u.id = t.user_id
-                WHERE u.id = "'.$_SESSION['id'].'"
-                AND t.status = 1';
-    $res_tasks = mysqli_query($con , $sql_tasks);
-    return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
-}
-//select deadline from task where match (title) against ('завтра');
+/**
+* Функция отбора задач по поиску
+* @param myslqli $con Хранит данные о текущем подключении
+* @param string $search_word слово для поиска
+* @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
+*/
 function get_tasks_by_search(mysqli $con, $search_word){
+    $user_id = mysqli_real_escape_string($con, $_SESSION['id']);
+    $search_word = mysqli_real_escape_string($con, $search_word);
     $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
-                WHERE u.id = "'.$_SESSION['id'].'"
+                WHERE u.id = "'.$user_id.'"
                 AND MATCH (title) AGAINST ("'.$search_word.'");';
     $res_tasks = mysqli_query($con , $sql_tasks);
     return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
 }
 
+
+/**
+* Функция отметки новой выполненной задачи
+* @param myslqli $con Хранит данные о текущем подключении
+* @param int $search_word id новой выполненной задачи
+*/
+
 function set_completed(mysqli $con, $task_completed_id){
-            $sql_update_querie = 'UPDATE task t SET
-                                t.status = 1
-                                WHERE t.task = "'.$task_completed_id.'";';
-            $res_update = mysqli_query($con, $sql_update_querie);
+    $id = mysqli_real_escape_string($con, $task_completed_id);
+    $sql_update_querie = 'UPDATE task t SET
+                    t.status = 1
+                    WHERE t.task = "'.$id.'";';
+    $res_update = mysqli_query($con, $sql_update_querie);
 }
 
 /**
@@ -110,6 +123,7 @@ function set_completed(mysqli $con, $task_completed_id){
 * @return int Идентификатор успешности/не успешности проведения действия
 */
 function add_user($user_name, $user_password, $user_email, $users, mysqli $con){
+    $user_email = mysqli_real_escape_string($con, $user_email);
     $check_email = False;
     $check_already_registered_email = True;
 

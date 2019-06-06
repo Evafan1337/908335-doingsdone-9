@@ -1,18 +1,3 @@
-<?php
-
-    //select deadline from task where match (title) against ('завтра');
-    var_dump($_GET);
-    var_dump($_SESSION);
-    //var_dump($tasks);
-    echo '<br>';
-    //echo trim($_POST['search-form']);
-    //echo date('Y-m-d');
-    //$date = '2019-06-03';
-    //$date_date = strtotime($date);
-    //echo date('Y-m-d',$date_date);
-
-?>
-
 <h2 class="content__main-heading">Список задач</h2>
 
 <form class="search-form" action="index.php" method="get" autocomplete="off">

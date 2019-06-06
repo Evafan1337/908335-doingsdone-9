@@ -3,6 +3,7 @@ require_once('assembling.php');
 session_start();
 $categories = get_categories($con);
 $users = get_users($con);
+$tasks_full = get_tasks_by_categories($con, -1);
 if(!empty($_POST) && !empty($_POST['name']) && !empty($_POST['project'])){
     $task_name = $_POST['name'];
     $task_project = $_POST['project'];
@@ -24,6 +25,7 @@ $layout_content = include_template ('layout.php',[
     'content' => $content,
     'categories' => $categories,
     'title' => 'Дела в порядке',
+    'tasks_full' => $tasks_full,
     'tasks' => $tasks,
     'choosen_project' => $choosen_project
 ]);

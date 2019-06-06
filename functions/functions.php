@@ -242,7 +242,7 @@ function login_user($users, $user_email, $user_password){
             if($user['email'] === $user_email){
                 $_SESSION['name'] = $user['name'];
                 $_SESSION['id'] = $user['id'];
-                $_SESSION['password'] = $user_password;
+                $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
             }
         }
 

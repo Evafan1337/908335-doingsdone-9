@@ -12,9 +12,7 @@ if(!empty($_POST)){
 if (isset($redirect_var) && $redirect_var === 1){
     header('Location: /index.php');
 }
-var_dump($_POST);
 $users_passwords = array_column($users, 'password');
-var_dump($users_passwords);
 $page_content = include_template('login.php', [
     'users_passwords' => $users_passwords
 ]);
