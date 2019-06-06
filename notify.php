@@ -34,7 +34,7 @@
             }
         }
         else $tasks_list = $list[3][0];
-        $list[6] = 'Уважаемый,'.$list[2].'.У вас '.get_noun_plural_form($list[1],'запланирована','запланированы','запланированы').' '.get_noun_plural_form($list[1],'задача','задачи','задачи').':'.$tasks_list.' на:'.$list[4];
+        $list[6] = 'Уважаемый,'.$list[2].'.У вас '.get_noun_plural_form($list[1],'запланирована ','запланированы ','запланированы ').' '.get_noun_plural_form($list[1],'задача','задачи','задачи').':'.$tasks_list.' на:'.$list[4];
     }
     foreach ($users_list_arr as $list) {
         $transport = new Swift_SmtpTransport("phpdemo.ru", 25);
