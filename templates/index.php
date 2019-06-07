@@ -22,16 +22,15 @@
 
 <table class="tasks">
     <?php
-        if(is_array($tasks) && (!isset($_SESSION['search-result']) || (isset($_SESSION['search-result']) &&(($_SESSION['search-result']) !== 'no') || $_SESSION['search-result'] === 'null' ))):
+        if (is_array($tasks) && (!isset($_SESSION['search-result']) || (isset($_SESSION['search-result']) &&(($_SESSION['search-result']) !== 'no') || $_SESSION['search-result'] === 'null' ))) :
             foreach ($tasks as $task) :
-                //if($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')):
-                if($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')):
+                if ($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')) :
     ?>
-    <?php if($task['status'] === '1'): ?>
+    <?php if ($task['status'] === '1') : ?>
         <tr class="tasks__item task task--completed">
-    <?php elseif(date('Y-m-d',time()) === date('Y-m-d',strtotime($task['deadline']))): ?>
+    <?php elseif (date('Y-m-d', time()) === date('Y-m-d', strtotime($task['deadline']))) : ?>
         <tr class="tasks__item task task--important">
-    <?php else: ?>
+    <?php else : ?>
         <tr class="tasks__item task">
     <?php endif; ?>
         <td class="task__select">
@@ -40,12 +39,12 @@
                     <span class="checkbox__text"><?= htmlspecialchars($task['title']) ?></span>
             </label>
         </td>
-        <?php if( strcmp('/uploads/', $task['file'])) : ?>
+        <?php if (strcmp('/uploads/', $task['file'])) : ?>
         <td class="task__file"><a href="#"><?= $task['file'] ?></a></td>
         <?php else : ?>
         <td class="task__file"><a href="#"></a></td>
         <?php endif; ?>
-        <?php if($task['deadline'] === $null_date) : ?>
+        <?php if ($task['deadline'] === $null_date) : ?>
         <td class="task__date"></td>
         <?php else : ?>
         <td class="task__date"><?= htmlspecialchars($task['deadline']) ?></td>
