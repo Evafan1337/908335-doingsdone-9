@@ -1,13 +1,3 @@
-<?php
-    // session_start();
-    // var_dump($_POST);
-    // var_dump($_SESSION);
-
-    // $str = 'as007ershov@gmail.com';
-    // if(preg_match("/[0-9a-z]+@[a-z]+[.]+[a-z]/", $str)){
-    //     echo 'true!';
-    // }
-?>
 <!DOCTYPE html>
 <html lang="ru">
 

@@ -29,7 +29,8 @@ function is_date_valid(string $date) : bool {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -46,14 +47,11 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            }elseif (is_double($value)) {
                 $type = 'd';
             }
-
             if ($type) {
                 $types .= $type;
                 $stmt_data[] = $value;
@@ -126,7 +124,8 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
@@ -149,62 +148,65 @@ function include_template($name, array $data = []) {
 * @author Ershov Sasha
 * @return $index
 */
-function count_categories($tasks, $category) {
+function count_categories($tasks, $category)
+{
     $index = 0;
-    if(is_array($tasks)){
+    if (is_array($tasks)) {
         foreach ($tasks as $task) {
-        if ($task['project_id'] === $category['id'])
-            {
-                $index++;
+            if ($task['project_id'] === $category['id']) {
+                    $index++;
             };
         }
         return $index;
     }
-
-return 0;}
+    return 0;
+}
 
 /**
 * Функция проверки на корректность выбора категории и вывода ошибки 404 в случае неудачи
 * @param array $categories - массив проектов
 * @param string $choosen_project название выбранного проекта на английском языке
 */
-function check_response($categories,$choosen_project){
-    if(isset($categories)){
+function check_response($categories, $choosen_project)
+{
+    if (isset($categories)) {
         $categories_aliases = array_column($categories, 'alias');
-        if ( $_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)){
+        if ($_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)) {
             http_response_code(404);
             die('error 404!');
+        }
     }
-    }
-
 }
 /**
 * Функция переноса загруженного файла из служебной директории в ./uploads
 * @return string $file_url
 */
-function move_file_to_uploads(){
+function move_file_to_uploads()
+{
     $file_name = $_FILES['file']['name'];
     $file_path = dirname(dirname(__DIR__. '/uploads/'));
     $file_url = '/uploads/' . $file_name;
     move_uploaded_file($_FILES['file']['tmp_name'], $file_path.$file_name);
-return $file_url;}
+    return $file_url;
+}
 
 /**
 * Функция перевода с русской раскладки на английскую,с учетом пробелов,перевода каретки и тд..
 * @param $s данные, которые необходимо перевести
 * @return $s переведенные данные
 */
-function make_transliteration($s) {
-  $s = (string) $s;
-  $s = strip_tags($s);
-  $s = str_replace(array("\n", "\r"), " ", $s);
-  $s = preg_replace("/\s+/", ' ', $s);
-  $s = trim($s);
-  $s = function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s);
-  $s = strtr($s, array('а'=>'a','б'=>'b','в'=>'v','г'=>'g','д'=>'d','е'=>'e','ё'=>'e','ж'=>'j','з'=>'z','и'=>'i','й'=>'y','к'=>'k','л'=>'l','м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'h','ц'=>'c','ч'=>'ch','ш'=>'sh','щ'=>'shch','ы'=>'y','э'=>'e','ю'=>'yu','я'=>'ya','ъ'=>'','ь'=>''));
-  $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s);
-  $s = str_replace(" ", "-", $s);
-  return $s;
+function make_transliteration($s)
+{
+    $s = (string) $s;
+    $s = strip_tags($s);
+    $s = str_replace(array("\n", "\r"), " ", $s);
+    $s = preg_replace("/\s+/", ' ', $s);
+    $s = trim($s);
+    $s = function_exists('mb_strtolower') ? mb_strtolower($s) : strtolower($s);
+    $s = strtr($s, array('а'=>'a','б'=>'b','в'=>'v','г'=>'g','д'=>'d','е'=>'e','ё'=>'e','ж'=>'j','з'=>'z','и'=>'i','й'=>'y','к'=>'k','л'=>'l','м'=>'m','н'=>'n','о'=>'o','п'=>'p','р'=>'r','с'=>'s','т'=>'t','у'=>'u','ф'=>'f','х'=>'h','ц'=>'c','ч'=>'ch','ш'=>'sh','щ'=>'shch','ы'=>'y','э'=>'e','ю'=>'yu','я'=>'ya','ъ'=>'','ь'=>''));
+    $s = preg_replace("/[^0-9a-z-_ ]/i", "", $s);
+    $s = str_replace(" ", "-", $s);
+    return $s;
 }
 
 
@@ -213,9 +215,11 @@ function make_transliteration($s) {
 * @param $users массив инф-ии обо всех пользователях
 * @return $users_emails_list одномерный массив эл.почт
 */
-function get_emails_list($users){
+function get_emails_list($users)
+{
     $users_emails_list = array_column($users, 'email');
-return $users_emails_list;}
+    return $users_emails_list;
+}
 
 /**
 * Функция, осуществляющая проверку и вход пользователя на сайт
@@ -224,31 +228,17 @@ return $users_emails_list;}
 * @param $user_password пароль пользователя, проходящего авторизацию
 * @return int Идентификатор успешности/не успешности проведения регистрации
 */
-function login_user($users, $user_email, $user_password){
+function login_user($users, $user_email, $user_password)
+{
     $users_emails_list = array_column($users, 'email');
-    $users_passwords_hash_list = array_column($users, 'password');
     $check_email = in_array($user_email, $users_emails_list);
-    $check_password = False;
-
     foreach ($users as $user) {
-        if($user['email'] === $user_email && password_verify($user_password, $user['password']) ){
-            $check_password = True;
-            break;
+        if ($user['email'] === $user_email && password_verify($user_password, $user['password'])) {
+            $_SESSION['name'] = $user['name'];
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
+            return 1;
         }
     }
-
-    if( $check_email && $check_password){
-        foreach ($users as $user) {
-            if($user['email'] === $user_email){
-                $_SESSION['name'] = $user['name'];
-                $_SESSION['id'] = $user['id'];
-                $_SESSION['password'] = $user_password;
-            }
-        }
-
-
-    return 1;
-    }
-return 0;}
-
-?>
+    return 0;
+}
