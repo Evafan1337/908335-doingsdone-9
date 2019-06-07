@@ -9,15 +9,19 @@ if(isset($_GET['show_completed'])){
 if(isset($_GET['category'])&& !empty($_SESSION)){
     $_SESSION['category'] = $_GET['category'];
 }
+
 if(isset($_GET['task_id'])){
-    set_completed($con, $_GET['task_id']);
+    set_completed($con, $_GET['task_id'], $_GET['check']);
 }
-$tasks_full = get_tasks_by_categories($con, -1);
-if($_GET['category'] === 'null'){
-    $tasks = get_tasks_by_categories($con,-1);
+if(isset($_SESSION['id'])){
+    $tasks_full = get_tasks_by_categories($con, -1, $_SESSION['id']);
 }
-else{
-    $tasks = get_tasks_by_categories($con, intval($_SESSION['category']));
+
+if($_GET['category'] === 'null' && isset($_SESSION['id'])){
+    $tasks = get_tasks_by_categories($con,-1, $_SESSION['id']);
+}
+elseif($_SESSION['id']){
+    $tasks = get_tasks_by_categories($con, intval($_SESSION['category']), $_SESSION['id']);
 }
 
 if(!empty($_GET['sorting']) && !empty($tasks) && $_GET['sorting'] !=='all'){
@@ -40,6 +44,9 @@ if(isset($_GET['search-form']) && !empty($_SESSION)){
     else{
         $_SESSION['search-result'] = 'yes';
     }
+}
+if(isset($_GET['sorting']) && $_GET['sorting'] === 'outdated'){
+    $_SESSION['show_completed'] = '0';
 }
 
 if(empty($_GET['search-form']) && !empty($_SESSION['search-result'])){

@@ -6,15 +6,12 @@
  * @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
  */
 function get_categories(mysqli $con){
-    if(!empty($_SESSION)){
         $user_id = mysqli_real_escape_string($con, $_SESSION['id']);
         $sql_categories = 'SELECT name,id,alias FROM project
                     WHERE user = "'.$user_id.'";';
         $res_categories = mysqli_query($con, $sql_categories);
         return mysqli_fetch_all($res_categories, MYSQLI_ASSOC);
-    }
-
-}
+return 0;}
 
 /**
 * Функция, отправляющая запрос в БД и сохраняющая данные пользователей из БД в ассоциативном массиве
@@ -31,30 +28,27 @@ function get_users(mysqli $con){
 * Функция выбора задач, соответствующих выбранному проекту
 * @param myslqli $con Хранит данные о текущем подключении
 * @param int $id_choosen_project id выбранной категории
+* @param int $user_id id текущего пользователя
 * @return mysqli_fetch_all возвращает результат запроса в ассоциативный массив
 */
-function get_tasks_by_categories(mysqli $con, $id_choosen_project){
-    if($id_choosen_project === -1 && !empty($_SESSION)){
-        $user_id = mysqli_real_escape_string($con, $_SESSION['id']);
-        $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
-                INNER JOIN task t
-                ON u.id = t.user_id
-                WHERE u.id = "'.$user_id.'";';
-        $res_tasks = mysqli_query($con , $sql_tasks);
-        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
-    }
-    elseif(!empty($_SESSION))
+function get_tasks_by_categories(mysqli $con, $id_choosen_project, $user_id){
+    $user_id = mysqli_real_escape_string($con, $user_id);
+    $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
+            INNER JOIN task t
+            ON u.id = t.user_id
+            WHERE u.id = "'.$user_id.'";';
+    $res_tasks = mysqli_query($con , $sql_tasks);
+    if(!empty($_SESSION) && $id_choosen_project !== -1)
     {
         $id_choosen_project = mysqli_real_escape_string($con, $id_choosen_project);
         $sql_tasks = 'SELECT t.title,t.task,t.project_id,t.user_id,t.status,t.date_create,t.deadline,t.file FROM user u
                 INNER JOIN task t
                 ON u.id = t.user_id
-                WHERE u.id = "'.$_SESSION['id'].'"
+                WHERE u.id = "'.$user_id.'"
                 AND t.project_id = "'.$id_choosen_project.'";';
         $res_tasks = mysqli_query($con , $sql_tasks);
-        return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
     }
-return 0;}
+return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);;}
 
 /**
 * Функция выбора задач, соответствующих сортировке
@@ -64,21 +58,26 @@ return 0;}
 */
 function get_tasks_by_sorting($sorting_condition, $tasks){
     if(is_array($tasks)){
+        $sorting_marker = False;
         $date_tomorrow = strtotime("+1 day");
+        $yesterday_23_59 = strtotime('today midnight');
+        $yesterday_23_59--;
         foreach ($tasks as $key => $task) {
             if($sorting_condition === 'today' && ($tasks[$key]['deadline']) !== date('Y-m-d')){
                 unset($tasks[$key]);
+                $sorting_marker = True;
             }
-            elseif ($sorting_condition === 'tomorrow' && ($tasks[$key]['deadline']) !== date('Y-m-d',$date_tomorrow)) {
+            elseif($sorting_condition === 'tomorrow' && ($tasks[$key]['deadline']) !== date('Y-m-d',$date_tomorrow)) {
                 unset($tasks[$key]);
+                $sorting_marker = True;
             }
-            elseif($sorting_condition === 'outdated' && $tasks[$key]['status'] !== '1' && ((strtotime($tasks[$key]['deadline'])) >= strtotime('today midnight') || $tasks[$key] !== '1970-01-01')){
+            elseif($sorting_condition ==='outdated' && (strtotime($tasks[$key]['deadline']) > $yesterday_23_59) && $tasks[$key]['status'] !== '1' && $sorting_marker === False || $tasks[$key]['deadline'] === '1970-01-01'){
                 unset($tasks[$key]);
             }
         }
         return $tasks;
     }
-}
+return 0;}
 
 /**
 * Функция отбора задач по поиску
@@ -97,18 +96,18 @@ function get_tasks_by_search(mysqli $con, $search_word){
     $res_tasks = mysqli_query($con , $sql_tasks);
     return mysqli_fetch_all($res_tasks, MYSQLI_ASSOC);
 }
-
-
 /**
 * Функция отметки новой выполненной задачи
 * @param myslqli $con Хранит данные о текущем подключении
 * @param int $search_word id новой выполненной задачи
+* @param int $check_index параметр задачи (выполнено/невыполнено)
 */
 
-function set_completed(mysqli $con, $task_completed_id){
+function set_completed(mysqli $con, $task_completed_id, $check_index){
     $id = mysqli_real_escape_string($con, $task_completed_id);
+    $check_index = mysqli_real_escape_string($con, $check_index);
     $sql_update_querie = 'UPDATE task t SET
-                    t.status = 1
+                    t.status = "'.$check_index.'"
                     WHERE t.task = "'.$id.'";';
     $res_update = mysqli_query($con, $sql_update_querie);
 }
@@ -164,9 +163,13 @@ return 0;}
 * @param mysqli $con хранит данные о текущем подключении
 * @param array $categories массив с текущими проектами
 * @param array $tasks массив с текущими задачами
+* @param string $task_name название задачи
+* @param $task_project id категории, к которой относится добавляемая задача
+* @param date $task_date дата, на которую запланирована задача
 * @return int Идентификатор успешности/не успешности проведения действия
 */
 function add_task(mysqli $con, $categories, $tasks, $task_name, $task_project, $task_date){
+    $file_uri = null;
     if(!empty($_FILES)){
         $file_uri = move_file_to_uploads();
     }
@@ -214,7 +217,10 @@ return 0;}
 $con = mysqli_connect('localhost','root','2k91abin1420pirzy','doingsdone');
 
 mysqli_set_charset($con, 'utf8');
-$categories = get_categories($con);
+if(!empty($_SESSION)){
+    $categories = get_categories($con);
+}
+
 $users = get_users($con);
 
 if (!empty($_GET['category'])) {
@@ -237,18 +243,10 @@ if($choosen_project!='null' && !empty($categories)){
     }
 }
 else $id_choosen_project = -1;
-check_response($categories,$choosen_project);
-$tasks_of_category = get_tasks_by_categories($con, $id_choosen_project);
-$tasks = get_tasks_by_categories($con,$id_choosen_project);
-
+if(isset($categories)){
+    check_response($categories,$choosen_project);
+}
 if(!$con){
     print('Error'.mysqli_connect_error());
 }
-else {
-
-    if(empty($tasks) && empty($categories)){
-        //die('Error while working with SQL request'.mysqli_error($con));
-    }
-};
-
 ?>

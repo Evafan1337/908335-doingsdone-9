@@ -174,7 +174,7 @@ function check_response($categories,$choosen_project){
         if ( $_GET['category']!='null' && !in_array($choosen_project, $categories_aliases)){
             http_response_code(404);
             die('error 404!');
-    }
+        }
     }
 
 }
@@ -226,28 +226,16 @@ return $users_emails_list;}
 */
 function login_user($users, $user_email, $user_password){
     $users_emails_list = array_column($users, 'email');
-    $users_passwords_hash_list = array_column($users, 'password');
     $check_email = in_array($user_email, $users_emails_list);
-    $check_password = False;
+    //$check_password = False;
 
     foreach ($users as $user) {
         if($user['email'] === $user_email && password_verify($user_password, $user['password']) ){
-            $check_password = True;
-            break;
+            $_SESSION['name'] = $user['name'];
+            $_SESSION['id'] = $user['id'];
+            $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
+            return 1;
         }
-    }
-
-    if( $check_email && $check_password){
-        foreach ($users as $user) {
-            if($user['email'] === $user_email){
-                $_SESSION['name'] = $user['name'];
-                $_SESSION['id'] = $user['id'];
-                $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
-            }
-        }
-
-
-    return 1;
     }
 return 0;}
 

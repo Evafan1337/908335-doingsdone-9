@@ -3,7 +3,9 @@ require_once('assembling.php');
 session_start();
 $categories = get_categories($con);
 $users = get_users($con);
-$tasks_full = get_tasks_by_categories($con, -1);
+if(isset($_SESSION['id'])){
+    $tasks_full = get_tasks_by_categories($con, -1, $_SESSION['id']);
+}
 if(!empty($_POST) && !empty($_POST['name']) && !empty($_POST['project'])){
     $task_name = $_POST['name'];
     $task_project = $_POST['project'];
@@ -13,7 +15,7 @@ if(!empty($_POST) && !empty($_POST['name']) && !empty($_POST['project'])){
     else {
         $task_date = $_POST['date'];
     }
-    $redirect_var = add_task($con,$categories, $tasks, $task_name, $task_project, $task_date);
+    $redirect_var = add_task($con,$categories, $tasks_full, $task_name, $task_project, $task_date);
 }
 if(isset($redirect_var) && $redirect_var === 1){
     header('Location: index.php');
@@ -26,7 +28,6 @@ $layout_content = include_template ('layout.php',[
     'categories' => $categories,
     'title' => 'Дела в порядке',
     'tasks_full' => $tasks_full,
-    'tasks' => $tasks,
     'choosen_project' => $choosen_project
 ]);
 print($layout_content);

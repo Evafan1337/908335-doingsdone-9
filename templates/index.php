@@ -24,6 +24,7 @@
     <?php
         if(is_array($tasks) && (!isset($_SESSION['search-result']) || (isset($_SESSION['search-result']) &&(($_SESSION['search-result']) !== 'no') || $_SESSION['search-result'] === 'null' ))):
             foreach ($tasks as $task) :
+                //if($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')):
                 if($task['status'] === '0' || (isset($_SESSION['show_completed']) && $_SESSION['show_completed'] === '1')):
     ?>
     <?php if($task['status'] === '1'): ?>
