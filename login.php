@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $errors['email'] = 'Введите корректный email';
     }
-    if (check_user($con, $users, $user_email, $user_password)) {
+    if (check_user($con, $user_email, $user_password)) {
         header('Location: /index.php');
     }
     if (empty($user_password)) {

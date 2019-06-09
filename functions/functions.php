@@ -224,12 +224,11 @@ function get_emails_list($users)
 /**
 * Функция, осуществляющая проверку и вход пользователя на сайт
 * @param mysqli $con хранит данные о текущем подключении к БД
-* @param $users массив пользователей
 * @param $user_email эл.почта пользователя, проходящего авторизацию
 * @param $user_password пароль пользователя, проходящего авторизацию
-* @return int Идентификатор успешности/не успешности проведения регистрации
+* @return boolean Идентификатор успешности/не успешности проведения авторизации
 */
-function check_user(mysqli $con, $users, $user_email, $user_password)
+function check_user(mysqli $con, $user_email, $user_password)
 {
     $user_email = mysqli_real_escape_string($con, $user_email);
     $user_password = mysqli_real_escape_string($con, $user_password);
