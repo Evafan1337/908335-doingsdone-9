@@ -223,22 +223,23 @@ function get_emails_list($users)
 
 /**
 * Функция, осуществляющая проверку и вход пользователя на сайт
-* @param $users массив пользователей
+* @param mysqli $con хранит данные о текущем подключении к БД
 * @param $user_email эл.почта пользователя, проходящего авторизацию
 * @param $user_password пароль пользователя, проходящего авторизацию
-* @return int Идентификатор успешности/не успешности проведения регистрации
+* @return boolean Идентификатор успешности/не успешности проведения авторизации
 */
-function login_user($users, $user_email, $user_password)
+function check_user(mysqli $con, $user_email, $user_password)
 {
-    $users_emails_list = array_column($users, 'email');
-    $check_email = in_array($user_email, $users_emails_list);
-    foreach ($users as $user) {
-        if ($user['email'] === $user_email && password_verify($user_password, $user['password'])) {
-            $_SESSION['name'] = $user['name'];
-            $_SESSION['id'] = $user['id'];
-            $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
-            return 1;
-        }
+    $user_email = mysqli_real_escape_string($con, $user_email);
+    $user_password = mysqli_real_escape_string($con, $user_password);
+    $check_login_query = 'SELECT name,password,name,id FROM user WHERE email = "'.$user_email.'";';
+    $res_query = mysqli_query($con, $check_login_query);
+    $current_user = mysqli_fetch_all($res_query, MYSQLI_ASSOC);
+    if (!empty($current_user) && password_verify($user_password, $current_user[0]['password'])){
+        $_SESSION['name'] = $current_user[0]['name'];
+        $_SESSION['id'] = $current_user[0]['id'];
+        $_SESSION['password'] = password_hash($user_password, PASSWORD_DEFAULT);
+        return true;
     }
-    return 0;
+    return false;
 }

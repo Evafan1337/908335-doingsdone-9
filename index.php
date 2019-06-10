@@ -26,7 +26,6 @@ if ($_GET['category'] === 'null' && isset($_SESSION['id'])) {
 if (!empty($_GET['sorting']) && !empty($tasks) && $_GET['sorting'] !=='all') {
     $tasks = get_tasks_by_sorting($_GET['sorting'], $tasks);
 }
-
 if (isset($_GET['exit']) && $_GET['exit'] === 'true') {
     session_destroy();
     header('Location: pages/guest.php');
